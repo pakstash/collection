@@ -1,0 +1,59 @@
+name: Build and Publish
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+
+    outputs:
+      images: ${{ steps.images.outputs.images }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Discover image directories
+        id: images
+        shell: bash
+        env:
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          images=$(python scripts/discover-images.py)
+          echo "images=${images}" >> "$GITHUB_OUTPUT"
+
+  publish:
+    needs: discover
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ${{ fromJson(needs.discover.outputs.images) }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push ${{ matrix.image.directory }}
+        uses: docker/build-push-action@v6
+        env:
+          SOURCE_DATE_EPOCH: 0
+        with:
+          context: ${{ matrix.image.directory }}
+          push: true
+          tags: ${{ matrix.image.tag }}
+          build-args: |
+            SOURCE_DATE_EPOCH=0
