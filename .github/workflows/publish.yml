@@ -10,22 +10,47 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      images: ${{ steps.images.outputs.images }}
+      owner: ${{ steps.manifest.outputs.owner }}
+      runtimes: ${{ steps.manifest.outputs.runtimes }}
+      images: ${{ steps.manifest.outputs.images }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Discover image directories
-        id: images
+      - name: Discover build targets
+        id: manifest
         shell: bash
         env:
           OWNER: ${{ github.repository_owner }}
-        run: |
-          images=$(python scripts/discover-images.py)
-          echo "images=${images}" >> "$GITHUB_OUTPUT"
+        run: python scripts/discover-images.py github-outputs >> "$GITHUB_OUTPUT"
+
+  publish-runtimes:
+    needs: discover
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push runtimes
+        env:
+          OWNER: ${{ needs.discover.outputs.owner }}
+        run: python scripts/discover-images.py build-runtimes
 
   publish:
-    needs: discover
+    needs:
+      - discover
+      - publish-runtimes
     runs-on: ubuntu-latest
 
     permissions:
@@ -49,11 +74,10 @@ jobs:
 
       - name: Build and Push ${{ matrix.image.directory }}
         uses: docker/build-push-action@v6
-        env:
-          SOURCE_DATE_EPOCH: 0
         with:
-          context: ${{ matrix.image.directory }}
+          context: .
+          file: ${{ matrix.image.directory }}/Dockerfile
+          build-args: |
+            OWNER=${{ needs.discover.outputs.owner }}
           push: true
           tags: ${{ matrix.image.tag }}
-          build-args: |
-            SOURCE_DATE_EPOCH=0
