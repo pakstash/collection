@@ -9,8 +9,8 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
         librewolf \
-        libegl1 \
-        libpulse0 && \
+        libpulse0 \
+        libavcodec-extra && \
     apt-get purge -y --auto-remove extrepo && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /run/* /tmp/*
