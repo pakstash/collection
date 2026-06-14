@@ -3,7 +3,6 @@ FROM ghcr.io/${OWNER}/base-mesa:latest
 
 RUN dpkg --add-architecture i386 && \
     apt-get update && \
-    apt-get upgrade -y --no-install-recommends && \
     apt-get install -y --no-install-recommends \
         libegl1:i386 \
         libgl1:i386 \
