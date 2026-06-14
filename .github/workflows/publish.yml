@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: '0 0 * * 0'
   workflow_dispatch:
+    inputs:
+      images:
+        description: "Comma-separated image names to build; empty builds everything"
+        required: false
+        default: ""
+        type: string
 
 jobs:
   discover:
@@ -22,10 +28,12 @@ jobs:
         shell: bash
         env:
           OWNER: ${{ github.repository_owner }}
+          IMAGES: ${{ inputs.images || '' }}
         run: python scripts/discover-images.py github-outputs >> "$GITHUB_OUTPUT"
 
   publish-runtimes:
     needs: discover
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.images == '' }}
     runs-on: ubuntu-latest
 
     permissions:
@@ -51,6 +59,7 @@ jobs:
     needs:
       - discover
       - publish-runtimes
+    if: ${{ always() && needs.discover.result == 'success' && (needs.publish-runtimes.result == 'success' || needs.publish-runtimes.result == 'skipped') }}
     runs-on: ubuntu-latest
 
     permissions:

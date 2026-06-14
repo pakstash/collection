@@ -19,6 +19,23 @@ def image_entry(owner: str, directory: str, name: str) -> dict[str, str]:
     }
 
 
+def parse_image_filter() -> list[str]:
+    return [name.strip() for name in os.environ.get("IMAGES", "").split(",") if name.strip()]
+
+
+def filter_images(images: list[dict[str, str]], selected_names: list[str]) -> list[dict[str, str]]:
+    if not selected_names:
+        return images
+
+    images_by_name = {image["name"]: image for image in images}
+    missing_names = [name for name in selected_names if name not in images_by_name]
+
+    if missing_names:
+        raise SystemExit(f"Unknown image(s): {', '.join(missing_names)}")
+
+    return [images_by_name[name] for name in selected_names]
+
+
 def discover_images(owner: str) -> list[dict[str, str]]:
     images = []
 
@@ -32,8 +49,7 @@ def discover_images(owner: str) -> list[dict[str, str]]:
     if not images:
         raise SystemExit("No image directories with Dockerfile found")
 
-    return images
-
+    return filter_images(images, parse_image_filter())
 
 def discover_runtimes(owner: str) -> list[dict[str, str]]:
     runtimes = []
