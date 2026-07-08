@@ -2,7 +2,7 @@
 
 This repository contains OCI image recipes for running desktop applications in containers with [pakstak](https://codeberg.org/pakstak/pakstak).
 
-The recipes are automatically built and published periodically to `ghcr.io/pakstash/name_of_package:latest`.
+The recipes are automatically built and published periodically to `ghcr.io/pakstash/<IMAGE_NAME>:latest`.
 
 Example:
 
@@ -12,11 +12,16 @@ pakstak install mpv ghcr.io/pakstash/mpv:latest
 
 The published images are standard OCI images and are not pakstak-specific, so they can be used with any container engine.
 
+## Recommendations
+
+You can find additional recommendations, examples, or other information in the image directories.
+Command examples typically reside in `images/<IMAGE_NAME>/examples`, and general information resides in `images/<IMAGE_NAME>/README.md`.
+
 ## Using and contributing
 
-The published images are currently simple (as in "low effort") images based on slim official Debian Docker images, usually built with APT. They are meant be smaller and include only the necessary dependencies in the future.
+The published images are currently simple (as in "low effort") images based on slim official Debian Docker images, usually built with APT. They are meant to become smaller and include only the necessary dependencies in the future.
 
-You are encouraged to clone this repository as a template for building and publishing your own images. GitHub currently provides free Actions usage and GHCR currently provides free storage for the resulting published images.
+You are encouraged to clone this repository as a template for building and publishing your own images. GitHub currently provides free Actions usage, and GHCR currently provides free storage for the resulting published images.
 Contributions back to this repository are welcome as well.
 
 ## Building and publishing
