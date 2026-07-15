@@ -18,5 +18,6 @@ pakstak run steam \
 	--ro-bind "$XDG_RUNTIME_DIR/pulse/native" /run/user/1000/pulse/native \
 	--remount-ro /run \
 	--ro-bind /tmp/.X11-unix /tmp/.X11-unix \
+	--ro-bind /etc/resolv.conf /etc/resolv.conf \
 	--chdir /home/user/.local/share/Steam \
 	./steam.sh
