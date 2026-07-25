@@ -1,6 +1,6 @@
 # Container Images
 
-This repository contains OCI image recipes for running desktop applications in containers with [pakstak](https://codeberg.org/pakstak/pakstak).
+This repository contains OCI image recipes for running desktop applications in containers with [pakstak](https://github.com/pakstak/pakstak).
 
 The recipes are automatically built and published periodically to `ghcr.io/pakstash/<IMAGE_NAME>:latest`.
 
