@@ -1,13 +1,13 @@
 #!/bin/sh
 set -u
-mkdir -p "$HOME/.var/container/steam"
+mkdir -p "$HOME/.local/share/container_persistence/steam"
 pakstak run steam \
 	-- \
 	--share-net \
 	--gid 1000 \
 	--uid 1000 \
 	--hostname localhost \
-	--bind "$HOME/.var/container/steam" /home/user \
+	--bind "$HOME/.local/share/container_persistence/steam" /home/user \
 	--setenv HOME /home/user \
 	--setenv DISPLAY "$DISPLAY" \
 	--dev-bind /dev/dri /dev/dri \

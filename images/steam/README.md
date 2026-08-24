@@ -8,11 +8,11 @@ The installer is not included in this image.
 
 You can download the installer as a compressed tarball from [here](https://repo.steampowered.com/steam/archive/stable/steam_latest.tar.gz).
 
-Extract it into `$HOME/.var/container/steam/`. This should create `$HOME/.var/container/steam/steam-launcher`.
+Extract it into `$HOME/.local/share/container_persistence/steam/`. This should create `$HOME/.local/share/container_persistence/steam/steam-launcher`.
 
 You can now install it with the [example installation command](examples/install).
 
-After the installation process is complete, you can remove `$HOME/.var/container/steam/steam-launcher` directory.
+After the installation process is complete, you can remove `$HOME/.local/share/container_persistence/steam/steam-launcher` directory.
 
 ## Running
 

@@ -1,22 +1,24 @@
 #!/bin/sh
 set -u
-mkdir -p "$HOME/.local/share/container_persistence/onlyoffice"
-pakstak run onlyoffice \
+mkdir -p "$HOME/.local/share/container_persistence/librewolf"
+pakstak run librewolf \
 	-- \
 	--share-net \
 	--gid 1000 \
 	--uid 1000 \
 	--hostname localhost \
-	--bind "$HOME/.local/share/container_persistence/onlyoffice" /home/user \
+	--bind "$HOME/.local/share/container_persistence/librewolf" /home/user \
 	--dev-bind /dev/dri /dev/dri \
 	--ro-bind /sys /sys \
 	--tmpfs /run \
 	--dir /run/user/1000/pulse \
 	--ro-bind "$XDG_RUNTIME_DIR/pulse/native" /run/user/1000/pulse/native \
-	--ro-bind /tmp/.X11-unix /tmp/.X11-unix \
+	--ro-bind "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" "/run/user/1000/$WAYLAND_DISPLAY" \
+	--remount-ro /run \
 	--ro-bind /etc/resolv.conf /etc/resolv.conf \
 	--setenv HOME /home/user \
-	--setenv DISPLAY "$DISPLAY" \
+	--setenv WAYLAND_DISPLAY "$WAYLAND_DISPLAY" \
 	--setenv XDG_RUNTIME_DIR /run/user/1000 \
+	--setenv PULSE_SERVER unix:/run/user/1000/pulse/native \
 	--chdir /home/user \
-	/usr/bin/onlyoffice-desktopeditors
+	librewolf "$@"
